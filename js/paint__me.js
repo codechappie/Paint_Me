@@ -1,1 +1,1384 @@
-let html=document.getElementById("paintme__app");const paintMeHTML='\n<button id="paintme-button">\n<img src="/icons/icons8_paint_palette.svg" alt="">\n</button>\n<div id="paintme">\n\x3c!-- Navigation bar --\x3e\n<nav id="main-nav" class="navbar-paintme">\n<div class="container-fluid">\n    \x3c!-- Shapes --\x3e\n    <ul id="shape-list" class="nav-paintme">\n        <li class="nav-item-paintme" data-shape="rectangle">\n            <a>\n                <img src="/icons/icons8_rectangle_stroked.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme" data-shape="oval">\n            <a>\n                <img src="/icons/icons8_ellipse_stroked.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme" data-shape="circle">\n            <a>\n                <img src="/icons/icons8_circled.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme" data-shape="line">\n            <a>\n                <img src="/icons/icons8_line.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme" class="active" data-shape="lineList">\n            <a>\n                <img src="/icons/icons8_pencil_tip.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme eraser" class="active" data-shape="eraseList">\n            <a>\n                <img src="/icons/icons8-erase.png" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme" class="texto" data-shape="text">\n            <a>\n                <img src="/icons/icons8_text.svg" alt="" />\n            </a>\n        </li>\n        \x3c!-- <li class="nav-item-paintme" data-shape="move">\n<a>\n<img src="/icons/icons8_text.svg" alt="" />\n</a>\n</li> --\x3e\n    </ul>\n    \x3c!-- Settings --\x3e\n    <ul id="settings-list" class="nav-paintme">\n        <li class="nav-item-paintme">\n            <a>\n                <input id="color-selector" type="color" />\n            </a>\n        </li>\n        <li class="nav-item-paintme">\n            <a data-toggle="modal" id="btn-size" class="btn-si">\n                <img src="/icons/icons8_positive_dynamic.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme">\n            <a id="btn-bg">\n                <img src="/icons/btn-whiteboard.png" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme">\n            <a id="fill-toggle" data-filled="no">\n                <img src="/icons/icons8_bring_forward.svg" alt="" />\n            </a>\n        </li>\n    </ul>\n    \x3c!-- IO --\x3e\n    <ul id="io-list" class="nav-paintme">\n        <li class="nav-item-paintme">\n            <a id="img-save">\n                <img src="/icons/icons8_download_from_cloud.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme">\n            <a id="img-load">\n                <img src="/icons/icons8_upload_to_cloud.svg" alt="" />\n            </a>\n        </li>\n    </ul>\n    \x3c!-- Undo + Redo --\x3e\n    <ul id="time-travel" class="nav-paintme">\n        <li class="nav-item-paintme">\n            <a id="img-clear">\n                <img src="/icons/icons8_file.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme">\n            <a id="btn-undo">\n                <img src="/icons/icons8_undo.svg" alt="" />\n            </a>\n        </li>\n        <li class="nav-item-paintme">\n            <a id="btn-redo">\n                <img src="/icons/icons8_redo.svg" alt="" />\n            </a>\n        </li>\n    </ul>\n\n    <ul id="extra-tools" class="nav-paintme">\n        <li class="nav-item-paintme">\n            <a class="btn-close">\n                <img src="/icons/closepaint.png" alt="" />\n            </a>\n        </li>\n    </ul>\n</div>\n</nav>\n\n\x3c!-- Canvas --\x3e\n<div class="container-fluid">\n<canvas id="canvas">\n    Tu navegador no soporta esta aplicación :(\n</canvas>\n</div>\n\n\x3c!-- Hidden modal for size adjustments --\x3e\n<div id="size-modal" class="modal">\n<div class="modal-dialog">\n    <div class="modal-content">\n        <div class="modal-header">\n            <h4 class="modal-title">Modificar tamaños</h4>\n            <button type="button" class="close btn-close-modal-size abort" data-dismiss="modal">\n                <img src="/icons/icons8_multiply.svg" alt="" />\n            </button>\n        </div>\n        <div class="modal-body">\n            <table class="table" id="size-table">\n                <tbody>\n                    <tr id="font-row" data-value="36pt">\n                        <td>Tamaño de fuente</td>\n                        <td>\n                            <a class="decrease"> - </a>\n                        </td>\n                        <td class="value-data center">36pt</td>\n                        <td class="center">\n                            <a class="increase"> + </a>\n                        </td>\n                    </tr>\n                    <tr id="width-row" data-value="1">\n                        <td>Ancho de linea</td>\n                        <td>\n                            <a class="decrease"> - </a>\n                        </td>\n                        <td class="value-data center">10</td>\n                        <td class="center">\n                            <a class="increase"> + </a>\n                        </td>\n                    </tr>\n                </tbody>\n            </table>\n        </div>\n        <div class="modal-footer">\n            <button type="button" class="btn btn-close-modal-size abort">\n                Cancelar\n            </button>\n            <button type="button" class="btn btn-close-modal-size confirm">\n                Aplicar\n            </button>\n        </div>\n    </div>\n</div>\n</div>\n\n<div id="bg-modal" class="modal">\n<div class="modal-dialog">\n    <div class="modal-content">\n        <div class="modal-header">\n            <h4 class="modal-title">Modificar tamaños</h4>\n            <button type="button" class="close btn-close-modal-bg abort" data-dismiss="modal">\n                <img src="/icons/icons8_multiply.svg" alt="" />\n            </button>\n        </div>\n        <div class="modal-body">\n            <div class="group-options">\n                <div id="opt1" class="button-card-option">\n                    <h3>Transparente</h3>\n                </div>\n                <div id="opt2" class="button-card-option">\n                </div>\n                <div id="opt3" class="button-card-option">\n                </div>\n                <div id="opt4" class="button-card-option">\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n</div>\n\n</div>';html.insertAdjacentHTML("afterend",paintMeHTML),html.remove(),console.log(html),window.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("paintme-button"),t=document.querySelector("#paintme"),n=document.querySelectorAll(".btn-close-modal-size"),s=document.getElementById("btn-size"),i=document.getElementById("size-modal"),a=document.querySelectorAll(".btn-close-modal-bg"),l=document.querySelector("#fill-toggle"),o=document.querySelector("#btn-bg"),c=document.querySelector("#bg-modal"),d=document.querySelector("#opt1"),r=document.querySelector("#opt2"),h=document.querySelector("#opt3"),u=document.querySelector("#opt4"),p=document.querySelector(".btn-close");n.forEach(e=>{e.addEventListener("click",()=>{i.classList.toggle("show")})}),e.addEventListener("click",()=>{t.classList.toggle("show")}),s.addEventListener("click",()=>{i.classList.toggle("show")}),n.forEach(e=>{e.addEventListener("click",()=>{i.classList.remove("show"),c.classList.remove("show")})}),a.forEach(e=>{e.addEventListener("click",()=>{c.classList.remove("show"),i.classList.remove("show")})}),o.addEventListener("click",()=>{c.classList.toggle("show"),i.classList.remove("show")}),l.addEventListener("click",()=>{l.classList.toggle("active")}),p.addEventListener("click",()=>{t.classList.toggle("show")}),s.addEventListener("click",()=>{i.classList.toggle("show"),c.classList.remove("show")}),d.addEventListener("click",()=>{canvas.style.background="transparent"}),r.addEventListener("click",()=>{canvas.style.background="white",canvas.style.backgroundImage="url('/images/white.png')"}),h.addEventListener("click",()=>{canvas.style.background="white",canvas.style.backgroundSize="200px 200px",canvas.style.backgroundImage="url('/images/grid-pattern.png')",canvas.style.transition="background .2s ease-in-out"}),u.addEventListener("click",()=>{canvas.style.background="white",canvas.style.backgroundSize="600px 600px",canvas.style.backgroundImage="url('/images/lined.png')",canvas.style.transition="background .2s ease-in-out"}),l.addEventListener("click",()=>{l.classList.toggle("active")}),p.addEventListener("click",()=>{t.classList.remove("show")}),s.addEventListener("click",()=>{i.classList.toggle("show"),c.classList.remove("show")})}),window.requestAnimFrame=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimaitonFrame||function(e){window.setTimeout(e,1e3/60)};class Shape{constructor(e,t){this.position=e,this.settings=t}render(e){e.fillStyle=this.settings.color,e.strokeStyle=this.settings.color,e.lineWidth=this.settings.width,e.font=this.settings.font}move(e){this.position=e}resize(e,t){}}class Rectangle extends Shape{constructor(e,t,n,s){super(e,t),this.width=n,this.height=s}render(e){e.globalCompositeOperation="source-over",super.render(e),this.settings.filled?e.fillRect(this.position.x,this.position.y,this.width,this.height):e.strokeRect(this.position.x,this.position.y,this.width,this.height)}resize(e,t){this.width=e-this.position.x,this.height=t-this.position.y}}class Oval extends Shape{constructor(e,t,n,s){super(e,t),this.xRadius=n,this.yRadius=s,this.x=e.x,this.y=e.y}render(e){e.globalCompositeOperation="source-over",super.render(e),e.beginPath();let t=(this.position.x+this.x)/2,n=(this.position.y+this.y)/2;e.ellipse(t,n,this.xRadius,this.yRadius,0,0,2*Math.PI),this.settings.filled?e.fill():(e.stroke(),e.closePath())}resize(e,t){this.x=e,this.y=t,this.xRadius=Math.abs(e-this.position.x)/2,this.yRadius=Math.abs(t-this.position.y)/2}}class Circle extends Oval{constructor(e,t,n){super(e,t,n,n)}resize(e,t){this.x=e,this.y=t;let n=Math.max(Math.abs(e-this.position.x),Math.abs(t-this.position.y))/2;this.xRadius=n,this.yRadius=n}}class Line extends Shape{constructor(e,t,n){super(e,t),this.endPosition={x:n.x,y:n.y}}render(e){e.globalCompositeOperation="source-over",super.render(e),e.beginPath(),e.moveTo(this.position.x,this.position.y),e.lineTo(this.endPosition.x,this.endPosition.y),e.stroke(),e.closePath()}resize(e,t){this.endPosition.x=e,this.endPosition.y=t}}class LineList extends Shape{constructor(e,t){super(e,t),this.xList=[],this.yList=[]}render(e){e.globalCompositeOperation="source-over",super.render(e),e.beginPath(),e.moveTo(this.position.x,this.position.y);for(let t=0;;t++){if(t>this.xList.length-1){e.quadraticCurveTo(this.xList[t],this.yList[t],this.xList[t+1],this.yList[t+1]);break}let n={x:(this.xList[t]+this.xList[t+1])/2,y:(this.yList[t]+this.yList[t+1])/2};e.quadraticCurveTo(this.xList[t],this.yList[t],n.x,n.y)}e.stroke(),e.closePath()}resize(e,t){this.xList.push(e),this.yList.push(t)}}class EraseList extends Shape{constructor(e,t){super(e,t),this.xList=[],this.yList=[]}render(e){super.render(e),e.beginPath(),e.globalCompositeOperation="destination-out",e.moveTo(this.position.x,this.position.y);for(let t=0;;t++){if(t>this.xList.length-1){e.quadraticCurveTo(this.xList[t],this.yList[t],this.xList[t+1],this.yList[t+1]);break}let n={x:(this.xList[t]+this.xList[t+1])/2,y:(this.yList[t]+this.yList[t+1])/2};e.quadraticCurveTo(this.xList[t],this.yList[t],n.x,n.y)}e.stroke(),e.closePath()}resize(e,t){this.xList.push(e),this.yList.push(t)}}class DrawnText extends Shape{constructor(e,t){super(e,t),this.chars=[]}render(e){e.globalCompositeOperation="source-over",super.render(e),this.settings.filled,e.fillText(this.chars.join(""),this.position.x,this.position.y)}resize(e){"Backspace"!==e?1===e.length&&this.chars.push(e):this.chars.length>0&&this.chars.pop()}}!function(){let e,t={shapes:[],undoneShapes:[],selectedShape:"lineList",canvas:document.getElementById("canvas"),ctx:document.getElementById("canvas").getContext("2d"),selectedElement:null,availableShapes:{RECTANGLE:"rectangle",OVAL:"oval",CIRCLE:"circle",LINE:"line",LINE_LIST:"lineList",ERASE_LIST:"eraseList",DrawnText:"text",MOVE:"move"},settings:{color:"#000000",filled:!1,width:10,font:"36pt sans-serif"},currentSettings:function(){return{color:t.settings.color.slice(0,t.settings.color.length),filled:t.settings.filled,width:t.settings.width,font:t.settings.font.slice(0,t.settings.font.length)}},currentSettingsEraser:function(){return{color:t.settings.color.slice(0,t.settings.color.length),filled:t.settings.filled,width:t.settings.width+10,font:t.settings.font.slice(0,t.settings.font.length)}},drawAllStoredShapes:function(){for(let e=0;e<t.shapes.length;e++)t.shapes[e]&&t.shapes[e].render(t.ctx)},drawSelected:function(){t.selectedElement&&t.selectedElement.render(t.ctx)},redraw:function(){t.ctx.canvas.width=window.innerWidth,t.ctx.canvas.height=window.innerHeight,width=canvas.width,height=canvas.height,t.ctx.clearRect(0,0,t.ctx.canvas.width,t.ctx.canvas.height),t.drawAllStoredShapes(),t.drawSelected()},redo:function(){t.undoneShapes.length>0&&(t.shapes.push(t.undoneShapes.pop()),t.redraw())},undo:function(){t.shapes.length>0&&(t.undoneShapes.push(t.shapes.pop()),t.redraw())}};t.canvas.addEventListener("touchstart",function(e){var n,s,i;mousePos=(n=canvas,s=e,i=n.getBoundingClientRect(),{x:s.touches[0].clientX-i.left,y:s.touches[0].clientY-i.top});var a=e.touches[0],l=new MouseEvent("mousedown",{clientX:a.clientX,clientY:a.clientY});t.canvas.dispatchEvent(l)},!1),t.canvas.addEventListener("touchend",function(e){var n=new MouseEvent("mouseup",{});t.canvas.dispatchEvent(n)},!1),t.canvas.addEventListener("touchmove",function(e){var n=e.touches[0],s=new MouseEvent("mousemove",{clientX:n.clientX,clientY:n.clientY});t.canvas.dispatchEvent(s)},!1),t.canvas.addEventListener("mousedown",function(n){switch(e={x:n.offsetX,y:n.offsetY},t.selectedShape){case t.availableShapes.RECTANGLE:t.selectedElement=new Rectangle(e,t.currentSettings(),0,0);break;case t.availableShapes.OVAL:t.selectedElement=new Oval(e,t.currentSettings(),0,0);break;case t.availableShapes.CIRCLE:t.selectedElement=new Circle(e,t.currentSettings(),0);break;case t.availableShapes.LINE:t.selectedElement=new Line(e,t.currentSettings(),e);break;case t.availableShapes.LINE_LIST:t.selectedElement=new LineList(e,t.currentSettings());break;case t.availableShapes.ERASE_LIST:t.selectedElement=new EraseList(e,t.currentSettingsEraser());break;case t.availableShapes.DrawnText:t.selectedElement&&(t.shapes.push(t.selectedElement),t.undoneShapes.splice(0,t.undoneShapes.length)),t.selectedElement=new DrawnText(e,t.currentSettings());break;case t.availableShapes.MOVE:}}),t.canvas.addEventListener("mousemove",function(e){t.selectedElement&&t.selectedShape!==t.availableShapes.DrawnText&&(t.selectedElement.resize(e.offsetX,e.offsetY),t.redraw())}),document.addEventListener("mouseup",function(e){t.selectedElement&&t.selectedShape!==t.availableShapes.DrawnText&&(t.shapes.push(t.selectedElement),t.selectedElement=null,t.undoneShapes.splice(0,t.undoneShapes.length))}),document.addEventListener("keypress",function(e){var n;t.selectedShape===t.availableShapes.DrawnText&&t.selectedElement?"Enter"===(n=e.key)?(t.shapes.push(t.selectedElement),t.selectedElement=null,t.undoneShapes.splice(0,t.undoneShapes.length)):(t.selectedElement.resize(n),t.redraw()):"Z"===e.key.toUpperCase()&&e.ctrlKey&&(e.shiftKey?t.redo():t.undo())}),document.addEventListener("keydown",function(e){if(t.selectedShape===t.availableShapes.DrawnText&&t.selectedElement){let n=e.key;"Backspace"===n&&(t.selectedElement.resize(n),t.redraw())}}),document.getElementById("btn-undo").addEventListener("click",t.undo),document.getElementById("btn-redo").addEventListener("click",t.redo),document.querySelectorAll("#shape-list li").forEach(function(e){e.addEventListener("click",function(s){"no"===n.dataset.filled&&(t.settings.filled=!1);let i=e.dataset.shape;i===t.availableShapes.DrawnText&&(t.settings.filled=!0,t.shapes.push(t.selectedElement),t.undoneShapes.splice(0,t.undoneShapes.length)),i!==t.selectedShape&&(t.selectedElement=null,t.selectedShape=i,document.querySelectorAll("#shape-list li.active")[0].classList.toggle("active"),e.classList.toggle("active"))})});let n=document.getElementById("fill-toggle");n.addEventListener("click",function(e){n.firstElementChild.classList.toggle("far"),n.firstElementChild.classList.toggle("fas"),"no"===n.dataset.filled?(n.dataset.filled="yes",t.settings.filled=!0):(n.dataset.filled="no",t.settings.filled=!1)});let s=document.getElementById("color-selector");s.value="#000000",s.addEventListener("change",function(e){t.settings.color=s.value});let i=document.getElementById("width-row"),a=i.querySelectorAll("td > a.decrease")[0],l=i.querySelectorAll("td > a.increase")[0],o=i.querySelectorAll("td.value-data")[0];a.addEventListener("click",function(e){o.innerHTML=Math.max(1,parseInt(o.innerHTML)-4)}),l.addEventListener("click",function(e){o.innerHTML=Math.min(70,parseInt(o.innerHTML)+4)});let c=document.getElementById("font-row"),d=c.querySelectorAll("td > a.decrease")[0],r=c.querySelectorAll("td > a.increase")[0],h=c.querySelectorAll("td.value-data")[0];d.addEventListener("click",function(e){h.innerHTML=(e=>Math.max(6,parseInt(e.slice(0,e.length-2))-4)+"pt")(h.innerHTML)}),r.addEventListener("click",function(e){h.innerHTML=(e=>Math.min(70,parseInt(e.slice(0,e.length-2))+4)+"pt")(h.innerHTML)});let u=document.getElementById("size-modal"),p=u.querySelectorAll("button.abort");for(let e=0;e<p.length;e++)p[e].addEventListener("click",function(e){o.innerHTML=i.dataset.value,h.innerHTML=c.dataset.value});function m(e){switch(e.type){case"Rectangle":t.shapes.push(new Rectangle(e.position,e.settings,e.width,e.height));break;case"Oval":t.shapes.push(new Oval(e.position,e.settings,e.xRadius,e.yRadius));break;case"Circle":t.shapes.push(new Circle(e.position,e.settings,e.xRadius));break;case"Line":t.shapes.push(new Line(e.position,e.settings,e.endPosition));break;case"LineList":let n=new LineList(e.position,e.settings);for(let t=0;t<e.xList.length;t++)n.resize(e.xList[t],e.yList[t]);t.shapes.push(n);break;case"EraseList":let s=new EraseList(e.position,e.settings);for(let t=0;t<e.xList.length;t++)s.resize(e.xList[t],e.yList[t]);t.shapes.push(s);break;case"DrawnText":let i=new DrawnText(e.position,e.settings);for(let t=0;t<e.chars.length;t++)i.resize(e.chars[t]);t.shapes.push(i)}}function v(e){let n=e.target.result,s=JSON.parse(n);t.selectedElement=null,t.shapes.splice(0,t.shapes.length),t.undoneShapes.splice(0,t.undoneShapes.length);for(let e=0;e<s.length;e++)m(s[e]);t.redraw()}function g(e){let t=e.target.files[0];if(!t)return;let n=new FileReader;n.addEventListener("load",v),n.readAsText(t)}u.querySelectorAll("button.confirm")[0].addEventListener("click",function(e){i.dataset.value=o.innerHTML,t.settings.width=parseInt(o.innerHTML),c.dataset.value=h.innerHTML,t.settings.font=h.innerHTML+" "+t.settings.font.split(" ")[1]}),document.getElementById("img-save").addEventListener("click",function(){let e=window.document.createElement("a");e.href=window.URL.createObjectURL(function(){let e=[];for(let n=0;n<t.shapes.length;n++){let s=JSON.parse(JSON.stringify(t.shapes[n]));s.type=t.shapes[n].__proto__.constructor.name,e.push(s)}return new Blob([JSON.stringify(e)],{type:"application/json"})}()),e.download="image.json",document.body.appendChild(e),e.click(),document.body.removeChild(e)}),document.getElementById("img-load").addEventListener("click",function(){let e=window.document.createElement("input");e.type="file",document.body.appendChild(e),e.style.visibility="hidden",e.addEventListener("change",g,!1),e.click(),document.body.removeChild(e)}),document.getElementById("img-clear").addEventListener("click",function(e){t.selectedElement=null,t.shapes.splice(0,t.shapes.length),t.undoneShapes.splice(0,t.undoneShapes.length),t.redraw()})}();
+let html = document.getElementById("paintme__app");
+const paintMeHTML = `
+<button id="paintme-button">
+<img src="https://codechappie.github.io/Paint_Me/icons/icons8_paint_palette.svg" alt="">
+</button>
+<div id="paintme">
+<!-- Navigation bar -->
+<nav id="main-nav" class="navbar-paintme">
+<div class="container-fluid">
+    <!-- Shapes -->
+    <ul id="shape-list" class="nav-paintme">
+        <li class="nav-item-paintme" data-shape="rectangle">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_rectangle_stroked.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme" data-shape="oval">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_ellipse_stroked.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme" data-shape="circle">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_circled.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme" data-shape="line">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_line.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme" class="active" data-shape="lineList">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_pencil_tip.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme eraser" class="active" data-shape="eraseList">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8-erase.png" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme" class="texto" data-shape="text">
+            <a>
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_text.svg" alt="" />
+            </a>
+        </li>
+        <!-- <li class="nav-item-paintme" data-shape="move">
+<a>
+<img src="https://codechappie.github.io/Paint_Me/icons/icons8_text.svg" alt="" />
+</a>
+</li> -->
+    </ul>
+    <!-- Settings -->
+    <ul id="settings-list" class="nav-paintme">
+        <li class="nav-item-paintme">
+            <a>
+                <input id="color-selector" type="color" />
+            </a>
+        </li>
+        <li class="nav-item-paintme">
+            <a data-toggle="modal" id="btn-size" class="btn-si">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_positive_dynamic.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme">
+            <a id="btn-bg">
+                <img src="https://codechappie.github.io/Paint_Me/icons/btn-whiteboard.png" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme">
+            <a id="fill-toggle" data-filled="no">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_bring_forward.svg" alt="" />
+            </a>
+        </li>
+    </ul>
+    <!-- IO -->
+    <ul id="io-list" class="nav-paintme">
+        <li class="nav-item-paintme">
+            <a id="img-save">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_download_from_cloud.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme">
+            <a id="img-load">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_upload_to_cloud.svg" alt="" />
+            </a>
+        </li>
+    </ul>
+    <!-- Undo + Redo -->
+    <ul id="time-travel" class="nav-paintme">
+        <li class="nav-item-paintme">
+            <a id="img-clear">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_file.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme">
+            <a id="btn-undo">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_undo.svg" alt="" />
+            </a>
+        </li>
+        <li class="nav-item-paintme">
+            <a id="btn-redo">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_redo.svg" alt="" />
+            </a>
+        </li>
+    </ul>
+
+    <ul id="extra-tools" class="nav-paintme">
+        <li class="nav-item-paintme">
+            <a class="btn-close">
+                <img src="https://codechappie.github.io/Paint_Me/icons/closepaint.png" alt="" />
+            </a>
+        </li>
+    </ul>
+</div>
+</nav>
+
+<!-- Canvas -->
+<div class="container-fluid">
+<canvas id="canvas">
+    Tu navegador no soporta esta aplicación :(
+</canvas>
+</div>
+
+<!-- Hidden modal for size adjustments -->
+<div id="size-modal" class="modal">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Modificar tamaños</h4>
+            <button type="button" class="close btn-close-modal-size abort" data-dismiss="modal">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_multiply.svg" alt="" />
+            </button>
+        </div>
+        <div class="modal-body">
+            <table class="table" id="size-table">
+                <tbody>
+                    <tr id="font-row" data-value="36pt">
+                        <td>Tamaño de fuente</td>
+                        <td>
+                            <a class="decrease"> - </a>
+                        </td>
+                        <td class="value-data center">36pt</td>
+                        <td class="center">
+                            <a class="increase"> + </a>
+                        </td>
+                    </tr>
+                    <tr id="width-row" data-value="1">
+                        <td>Ancho de linea</td>
+                        <td>
+                            <a class="decrease"> - </a>
+                        </td>
+                        <td class="value-data center">10</td>
+                        <td class="center">
+                            <a class="increase"> + </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-close-modal-size abort">
+                Cancelar
+            </button>
+            <button type="button" class="btn btn-close-modal-size confirm">
+                Aplicar
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div id="bg-modal" class="modal">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Modificar tamaños</h4>
+            <button type="button" class="close btn-close-modal-bg abort" data-dismiss="modal">
+                <img src="https://codechappie.github.io/Paint_Me/icons/icons8_multiply.svg" alt="" />
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="group-options">
+                <div id="opt1" class="button-card-option">
+                    <h3>Transparente</h3>
+                </div>
+                <div id="opt2" class="button-card-option">
+                </div>
+                <div id="opt3" class="button-card-option">
+                </div>
+                <div id="opt4" class="button-card-option">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</div>`;
+
+html.insertAdjacentHTML("afterend", paintMeHTML);
+html.remove();
+console.log(html)
+window.addEventListener("DOMContentLoaded", () => {
+
+
+
+    const btnPaintme = document.getElementById("paintme-button");
+    const paintme = document.querySelector("#paintme");
+
+    const btnCloseModal = document.querySelectorAll(".btn-close-modal-size");
+
+    const btnSize = document.getElementById("btn-size");
+    const modalSize = document.getElementById("size-modal");
+    const btnCloseModalBg = document.querySelectorAll(".btn-close-modal-bg");
+
+    const btnShape = document.querySelector("#fill-toggle");
+    const btnBg = document.querySelector("#btn-bg");
+    const modalBg = document.querySelector("#bg-modal");
+    const btnBgTransparent = document.querySelector("#opt1");
+    const btnBgWhite = document.querySelector("#opt2");
+    const btnBgSquared = document.querySelector("#opt3");
+    const btnBgLined = document.querySelector("#opt4");
+    const btnClose = document.querySelector(".btn-close");
+
+    btnCloseModal.forEach((buttonCloseModal) => {
+        buttonCloseModal.addEventListener("click", () => {
+            modalSize.classList.toggle("show");
+        });
+    });
+
+    btnPaintme.addEventListener("click", () => {
+        paintme.classList.toggle("show");
+    });
+
+    btnSize.addEventListener("click", () => {
+        modalSize.classList.toggle("show");
+    });
+
+    btnCloseModal.forEach((buttonCloseModal) => {
+        buttonCloseModal.addEventListener("click", () => {
+            modalSize.classList.remove("show");
+            modalBg.classList.remove("show");
+        });
+    });
+
+    btnCloseModalBg.forEach((buttonCloseModal) => {
+        buttonCloseModal.addEventListener("click", () => {
+            modalBg.classList.remove("show");
+            modalSize.classList.remove("show");
+        });
+    });
+
+    btnBg.addEventListener("click", () => {
+        modalBg.classList.toggle("show");
+        modalSize.classList.remove("show");
+    });
+
+    btnShape.addEventListener("click", () => {
+        btnShape.classList.toggle("active");
+    });
+
+    btnClose.addEventListener("click", () => {
+        paintme.classList.toggle("show");
+    });
+
+    btnSize.addEventListener("click", () => {
+        modalSize.classList.toggle("show");
+        modalBg.classList.remove("show");
+    });
+
+    btnBgTransparent.addEventListener("click", () => {
+        canvas.style.background = "transparent";
+    });
+    btnBgWhite.addEventListener("click", () => {
+        canvas.style.background = "white";
+        canvas.style.backgroundImage = "url('https://codechappie.github.io/Paint_Me/icons/icons8_paint_palette.svg/images/white.png')";
+    });
+    btnBgSquared.addEventListener("click", () => {
+        canvas.style.background = "white";
+        canvas.style.backgroundSize = "200px 200px";
+        canvas.style.backgroundImage = "url('https://codechappie.github.io/Paint_Me/icons/icons8_paint_palette.svg/images/grid-pattern.png')";
+        canvas.style.transition = "background .2s ease-in-out";
+    });
+    btnBgLined.addEventListener("click", () => {
+        canvas.style.background = "white";
+        canvas.style.backgroundSize = "600px 600px";
+        canvas.style.backgroundImage = "url('https://codechappie.github.io/Paint_Me/icons/icons8_paint_palette.svg/images/lined.png')";
+        canvas.style.transition = "background .2s ease-in-out";
+    });
+
+    btnShape.addEventListener("click", () => {
+        btnShape.classList.toggle("active");
+    });
+
+    btnClose.addEventListener("click", () => {
+        paintme.classList.remove("show");
+    });
+
+    btnSize.addEventListener("click", () => {
+        modalSize.classList.toggle("show");
+        modalBg.classList.remove("show");
+    });
+});
+
+// Get a regular interval for drawing to the screen
+window.requestAnimFrame = (function (callback) {
+    return (
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimaitonFrame ||
+        function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        }
+    );
+})();
+
+
+
+// region Shape
+/**
+ * The parent class for anything drawn on the canvas.
+ */
+class Shape {
+    /**
+     * Create a new Shape.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     */
+    constructor(position, settings) {
+        this.position = position;
+        this.settings = settings;
+    }
+
+    /**
+     * Draw the shape.
+     *
+     * @param ctx A 2d context for the canvas to which the Shape should be drawn to
+     */
+    render(ctx) {
+        ctx.fillStyle = this.settings.color;
+        ctx.strokeStyle = this.settings.color;
+        ctx.lineWidth = this.settings.width;
+        ctx.font = this.settings.font;
+    }
+
+    /**
+     * Move the shape's position by a provided new one.
+     *
+     * @param position A 2d position
+     */
+    move(position) {
+        this.position = position;
+    }
+
+    /**
+     * Resize the object, from its position to the new one
+     *
+     * @param x Horizontal coordinate
+     * @param y Vertical coordinate
+     */
+    resize(x, y) {
+
+    }
+}
+// endregion
+
+// region Rectangle
+/**
+* A drawable rectangular shape.
+*/
+class Rectangle extends Shape {
+    /**
+     * Create a new rectangle.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     * @param width Horizontal length of rectangle
+     * @param height Vertical length of rectangle
+     */
+    constructor(position, settings, width, height) {
+        super(position, settings);
+        this.width = width;
+        this.height = height;
+    }
+
+    /** @inheritDoc */
+    render(ctx) {
+        ctx.globalCompositeOperation = "source-over";
+        super.render(ctx);
+        if (this.settings.filled) {
+            ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        } else {
+            ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
+        }
+    }
+
+    /** @inheritDoc */
+    resize(x, y) {
+        this.width = x - this.position.x;
+        this.height = y - this.position.y;
+    }
+}
+// endregion
+
+// region Oval
+/**
+* A drawable ellipse.
+*/
+class Oval extends Shape {
+    /**
+     * Create a new Oval.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     * @param xRadius The horizontal half width of the oval
+     * @param yRadius The vertical half width of the oval
+     */
+    constructor(position, settings, xRadius, yRadius) {
+        super(position, settings);
+        this.xRadius = xRadius;
+        this.yRadius = yRadius;
+        // The width and height of the oval is determined by
+        // the distance from position to (x,y). The center
+        // of the oval is their mid point.
+        this.x = position.x;
+        this.y = position.y;
+    }
+
+    /** @inheritDoc */
+    render(ctx) {
+        ctx.globalCompositeOperation = "source-over";
+        super.render(ctx);
+        ctx.beginPath();
+        let c_x = (this.position.x + this.x) / 2;
+        let c_y = (this.position.y + this.y) / 2;
+        ctx.ellipse(c_x, c_y, this.xRadius, this.yRadius, 0, 0, 2 * Math.PI);
+        if (this.settings.filled) {
+            ctx.fill();
+        } else {
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+
+    /** @inheritDoc */
+    resize(x, y) {
+        this.x = x;
+        this.y = y;
+        this.xRadius = Math.abs(x - this.position.x) / 2;
+        this.yRadius = Math.abs(y - this.position.y) / 2;
+    }
+}
+// endregion
+
+// region Circle
+/**
+* A drawable circle.
+*/
+class Circle extends Oval {
+    /**
+     * Create a new Circle.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     * @param radius The half width of the circle
+     */
+    constructor(position, settings, radius) {
+        super(position, settings, radius, radius);
+    }
+
+    /** @inheritDoc */
+    resize(x, y) {
+        this.x = x;
+        this.y = y;
+        let radius = Math.max(Math.abs(x - this.position.x), Math.abs(y - this.position.y)) / 2;
+        this.xRadius = radius;
+        this.yRadius = radius;
+    }
+}
+// endregion
+
+// region Line
+/**
+* A drawable line segment.
+*/
+class Line extends Shape {
+    /**
+     * Create a new Line.
+     *
+     * @param startPosition The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     * @param endPosition The end point of the line segment
+     */
+    constructor(startPosition, settings, endPosition) {
+        super(startPosition, settings);
+        this.endPosition = { x: endPosition.x, y: endPosition.y };
+    }
+
+    /** @inheritDoc */
+    render(ctx) {
+        ctx.globalCompositeOperation = "source-over";
+        super.render(ctx);
+        ctx.beginPath();
+        ctx.moveTo(this.position.x, this.position.y);
+        ctx.lineTo(this.endPosition.x, this.endPosition.y);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    /** @inheritDoc */
+    resize(x, y) {
+        this.endPosition.x = x;
+        this.endPosition.y = y;
+    }
+}
+// endregion
+
+// region LineList
+/**
+* A drawable list of smoothed line segments.
+*/
+class LineList extends Shape {
+    /**
+     * Create a new LineList.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     */
+    constructor(position, settings) {
+        super(position, settings);
+        // All coordinates are kept in two separated arrays
+        this.xList = [];
+        this.yList = [];
+    }
+
+    /** @inheritDoc */
+    render(ctx) {
+        ctx.globalCompositeOperation = "source-over";
+        super.render(ctx);
+        ctx.beginPath();
+        ctx.moveTo(this.position.x, this.position.y);
+        // Segments are smoothed using quadratic curves
+        for (let i = 0; ; i++) {
+            if (i > this.xList.length - 1) {
+                ctx.quadraticCurveTo(this.xList[i], this.yList[i], this.xList[i + 1], this.yList[i + 1]);
+                break;
+            }
+            let center = { x: (this.xList[i] + this.xList[i + 1]) / 2, y: (this.yList[i] + this.yList[i + 1]) / 2 };
+            ctx.quadraticCurveTo(this.xList[i], this.yList[i], center.x, center.y);
+        }
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    /** @inheritDoc */
+    resize(x, y) {
+        this.xList.push(x);
+        this.yList.push(y);
+    }
+}
+// endregion
+
+
+
+// region EraseList
+/**
+* A drawable list of smoothed line segments.
+*/
+class EraseList extends Shape {
+    /**
+     * Create a new EraseList.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     */
+    constructor(position, settings) {
+        super(position, settings);
+        // All coordinates are kept in two separated arrays
+        this.xList = [];
+        this.yList = [];
+    }
+
+    /** @inheritDoc */
+    render(ctx) {
+        super.render(ctx);
+        ctx.beginPath();
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.moveTo(this.position.x, this.position.y);
+        // Segments are smoothed using quadratic curves
+        for (let i = 0; ; i++) {
+            if (i > this.xList.length - 1) {
+                ctx.quadraticCurveTo(this.xList[i], this.yList[i], this.xList[i + 1], this.yList[i + 1]);
+                break;
+            }
+            let center = { x: (this.xList[i] + this.xList[i + 1]) / 2, y: (this.yList[i] + this.yList[i + 1]) / 2 };
+            ctx.quadraticCurveTo(this.xList[i], this.yList[i], center.x, center.y);
+        }
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    /** @inheritDoc */
+    resize(x, y) {
+        this.xList.push(x);
+        this.yList.push(y);
+    }
+}
+// endregion
+
+
+// region DrawnText
+/**
+* A drawable text.
+*/
+class DrawnText extends Shape {
+    /**
+     * Create a new DrawnText.
+     *
+     * @param position The x and y position of the shape
+     * @param settings Various settings for drawing the shape {color, filled, width, font}
+     */
+    constructor(position, settings) {
+        super(position, settings);
+        // Letters are stored as internal char array.
+        this.chars = [];
+    }
+
+    /** @inheritDoc */
+    render(ctx) {
+        ctx.globalCompositeOperation = "source-over";
+        super.render(ctx);
+        if (this.settings.filled) {
+            ctx.fillText(this.chars.join(''), this.position.x, this.position.y);
+        } else {
+            ctx.fillText(this.chars.join(''), this.position.x, this.position.y);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param key The button which was pressed to add to the text
+     */
+    resize(key) {
+        // Delete last character if backspace
+        if (key === 'Backspace') {
+            if (this.chars.length > 0) {
+                this.chars.pop();
+            }
+            return;
+        }
+
+        // Discard all non-single-character-keys
+        if (key.length === 1) {
+            this.chars.push(key);
+        }
+    }
+}
+// endregion
+
+/**
+ * Function scope wrapper.
+ */
+(function () {
+    // region Drawer
+    /**
+     * An object that holds shapes and current settings
+     */
+    let drawer = {
+        // A list of shapes on the canvas
+        shapes: [],
+        // If any shapes are undone they are kept here temporarily
+        undoneShapes: [],
+        // The shape currently selected
+        selectedShape: "lineList",
+        // Canvas DOM element
+        canvas: document.getElementById("canvas"),
+        // The context of the canvas
+        ctx: document.getElementById("canvas").getContext("2d"),
+        // The element currently being drawn
+        selectedElement: null,
+        // The shapes we can choose from
+        availableShapes: {
+            RECTANGLE: "rectangle",
+            OVAL: "oval",
+            CIRCLE: "circle",
+            LINE: "line",
+            LINE_LIST: "lineList",
+            ERASE_LIST: "eraseList",
+            DrawnText: "text",
+            MOVE: "move", // TODO
+        },
+        // Settings for selectedElement
+        settings: {
+            color: "#000000",
+            filled: false,
+            width: 10,
+            font: "36pt sans-serif",
+        },
+        /**
+         * Deep copy of settings.
+         *
+         * @returns {{color: string, filled: boolean, width: number, font: string}}
+         */
+        currentSettings: function () {
+            return {
+                color: drawer.settings.color.slice(0, drawer.settings.color.length),
+                filled: drawer.settings.filled,
+                width: drawer.settings.width,
+                font: drawer.settings.font.slice(0, drawer.settings.font.length),
+            };
+        },
+        currentSettingsEraser: function () {
+            return {
+                color: drawer.settings.color.slice(0, drawer.settings.color.length),
+                filled: drawer.settings.filled,
+                width: drawer.settings.width + 10,
+                font: drawer.settings.font.slice(0, drawer.settings.font.length),
+            };
+        },
+
+        /**
+         * Draw all stored shapes.
+         */
+        drawAllStoredShapes: function () {
+            for (let i = 0; i < drawer.shapes.length; i++) {
+                if (drawer.shapes[i]) {
+                    drawer.shapes[i].render(drawer.ctx);
+                }
+            }
+        },
+        /**
+         * Draw the selected shape in its current state.
+         */
+        drawSelected: function () {
+            if (drawer.selectedElement) {
+                drawer.selectedElement.render(drawer.ctx);
+            }
+        },
+        /**
+         * Redraws all elements to the canvas.
+         */
+        redraw: function () {
+            // Wipe everything off the canvas
+            drawer.ctx.canvas.width = window.innerWidth;
+            drawer.ctx.canvas.height = window.innerHeight;
+            width = canvas.width;
+            height = canvas.height;
+            drawer.ctx.clearRect(
+                0,
+                0,
+                drawer.ctx.canvas.width,
+                drawer.ctx.canvas.height
+            );
+            drawer.drawAllStoredShapes();
+            drawer.drawSelected();
+        },
+        /**
+         * Add the last undone shape back to the list of shapes.
+         */
+        redo: function () {
+            if (drawer.undoneShapes.length > 0) {
+                drawer.shapes.push(drawer.undoneShapes.pop());
+                drawer.redraw();
+            }
+        },
+        /**
+         * Remove the last shape drawn and place in temporary redo storage.
+         */
+        undo: function () {
+            if (drawer.shapes.length > 0) {
+                drawer.undoneShapes.push(drawer.shapes.pop());
+                drawer.redraw();
+            }
+        },
+    };
+    // endregion
+    let pos;
+
+    // Set up touch events for mobile, etc
+    drawer.canvas.addEventListener(
+        "touchstart",
+        function (e) {
+            mousePos = getTouchPos(canvas, e);
+            var touch = e.touches[0];
+            var mouseEvent = new MouseEvent("mousedown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+            });
+            drawer.canvas.dispatchEvent(mouseEvent);
+        },
+        false
+    );
+    drawer.canvas.addEventListener(
+        "touchend",
+        function (e) {
+            var mouseEvent = new MouseEvent("mouseup", {});
+            drawer.canvas.dispatchEvent(mouseEvent);
+        },
+        false
+    );
+    drawer.canvas.addEventListener(
+        "touchmove",
+        function (e) {
+            var touch = e.touches[0];
+            var mouseEvent = new MouseEvent("mousemove", {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+            });
+            drawer.canvas.dispatchEvent(mouseEvent);
+        },
+        false
+    );
+
+    // Get the position of a touch relative to the canvas
+    function getTouchPos(canvasDom, touchEvent) {
+        var rect = canvasDom.getBoundingClientRect();
+        return {
+            x: touchEvent.touches[0].clientX - rect.left,
+            y: touchEvent.touches[0].clientY - rect.top,
+        };
+    }
+
+    // region Mouse events
+    // region Mouse down
+    drawer.canvas.addEventListener(
+        "mousedown",
+        /**
+         * Starts drawing the chosen shape.
+         *
+         * @param mouseEvent The event that trigger this callback
+         */
+        function (mouseEvent) {
+            pos = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
+            switch (drawer.selectedShape) {
+                case drawer.availableShapes.RECTANGLE:
+                    drawer.selectedElement = new Rectangle(
+                        pos,
+                        drawer.currentSettings(),
+                        0,
+                        0
+                    );
+                    break;
+                case drawer.availableShapes.OVAL:
+                    drawer.selectedElement = new Oval(
+                        pos,
+                        drawer.currentSettings(),
+                        0,
+                        0
+                    );
+                    break;
+                case drawer.availableShapes.CIRCLE:
+                    drawer.selectedElement = new Circle(pos, drawer.currentSettings(), 0);
+                    break;
+                case drawer.availableShapes.LINE:
+                    drawer.selectedElement = new Line(pos, drawer.currentSettings(), pos);
+                    break;
+                case drawer.availableShapes.LINE_LIST:
+                    drawer.selectedElement = new LineList(pos, drawer.currentSettings());
+                    break;
+                case drawer.availableShapes.ERASE_LIST:
+                    drawer.selectedElement = new EraseList(pos, drawer.currentSettingsEraser());
+                    break;
+                case drawer.availableShapes.DrawnText:
+                    // If we are already drawing text, store that one
+                    if (drawer.selectedElement) {
+                        drawer.shapes.push(drawer.selectedElement);
+                        drawer.undoneShapes.splice(0, drawer.undoneShapes.length);
+                    }
+                    drawer.selectedElement = new DrawnText(pos, drawer.currentSettings());
+                    break;
+                case drawer.availableShapes.MOVE:
+                    // TODO
+                    break;
+            }
+        }
+    );
+    // endregion
+
+    // region Mouse move
+    drawer.canvas.addEventListener(
+        "mousemove",
+        /**
+         * If any shape other than text is being drawn, we resize it.
+         *
+         * @param mouseEvent The event that trigger this callback
+         */
+        function (mouseEvent) {
+            if (
+                drawer.selectedElement &&
+                drawer.selectedShape !== drawer.availableShapes.DrawnText
+            ) {
+                drawer.selectedElement.resize(mouseEvent.offsetX, mouseEvent.offsetY);
+                drawer.redraw();
+            }
+        }
+    );
+    // endregion
+
+    // region Mouse up
+    document.addEventListener(
+        "mouseup",
+        /**
+         * If any element is being drawn and it's not text, then
+         * we store it when the mouse is released.
+         *
+         * @param mouseEvent  The event that trigger this callback
+         */
+        function (mouseEvent) {
+            if (
+                drawer.selectedElement &&
+                drawer.selectedShape !== drawer.availableShapes.DrawnText
+            ) {
+                drawer.shapes.push(drawer.selectedElement);
+                drawer.selectedElement = null;
+                drawer.undoneShapes.splice(0, drawer.undoneShapes.length);
+            }
+        }
+    );
+    // endregion
+    // endregion
+
+    // region Key events
+    /**
+     * If we are drawing a text and we press Enter, then
+     * we store the text and stop drawing it. Otherwise the
+     * key pressed is added to it.
+     *
+     * @param key A key that was pressed
+     */
+    function textKeyPress(key) {
+        if (key === "Enter") {
+            drawer.shapes.push(drawer.selectedElement);
+            drawer.selectedElement = null;
+            drawer.undoneShapes.splice(0, drawer.undoneShapes.length);
+        } else {
+            drawer.selectedElement.resize(key);
+            drawer.redraw();
+        }
+    }
+
+    document.addEventListener(
+        "keypress",
+        /**
+         * If a key is pressed, we first check to see if a text
+         * is being drawn and if so, handle that accordingly. If
+         * not, we check for undo and redo combos.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            if (
+                drawer.selectedShape === drawer.availableShapes.DrawnText &&
+                drawer.selectedElement
+            ) {
+                textKeyPress(evt.key);
+            } else if (evt.key.toUpperCase() === "Z" && evt.ctrlKey) {
+                if (evt.shiftKey) {
+                    drawer.redo();
+                } else {
+                    drawer.undo();
+                }
+            }
+        }
+    );
+    // endregion
+
+
+
+    document.addEventListener(
+        "keydown",
+        /**
+         * If a key is pressed, we first check to see if a text
+         * is being drawn and if so, handle that accordingly. If
+         * not, we check for undo and redo combos.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            if (
+                drawer.selectedShape === drawer.availableShapes.DrawnText &&
+                drawer.selectedElement
+            ) {
+                let key = evt.key;
+                if (key === "Backspace") {
+                    drawer.selectedElement.resize(key);
+                    drawer.redraw();
+                } else { }
+            }
+        }
+    );
+
+
+
+    // region OnClick events
+
+    // region Undo and Redo
+    // Undo and redo can also be done from the navigation bar by clicking icons
+    document.getElementById("btn-undo").addEventListener("click", drawer.undo);
+    document.getElementById("btn-redo").addEventListener("click", drawer.redo);
+    // endregion
+
+    // region Select element
+    // Add click events to the shape part of our navigation bar
+    document.querySelectorAll("#shape-list li").forEach(
+        /**
+         * Foreach function that is applied to all elements from the query selector.
+         *
+         * @param elem The current element of the query selector
+         */
+        function (elem) {
+            elem.addEventListener(
+                "click",
+                /**
+                 * If the shape is changed, we begin by checking to see
+                 * if the previous one was a text and if so, store it as is.
+                 * Then we change the selected shape and toggle the DOM element
+                 * class list for the class active, for both the previously selected
+                 * DOM and the new one.
+                 *
+                 * @param evt The event that triggered this callback
+                 */
+                function (evt) {
+                    if (filled.dataset["filled"] === "no") {
+                        drawer.settings.filled = false;
+                    }
+                    let clickedShape = elem.dataset.shape;
+                    if (
+                        clickedShape === drawer.availableShapes.DrawnText
+                    ) {
+                        drawer.settings.filled = true;
+                        drawer.shapes.push(drawer.selectedElement);
+                        drawer.undoneShapes.splice(0, drawer.undoneShapes.length);
+                    }
+                    if (clickedShape !== drawer.selectedShape) {
+
+                        drawer.selectedElement = null;
+                        drawer.selectedShape = clickedShape;
+
+                        document
+                            .querySelectorAll("#shape-list li.active")[0]
+                            .classList.toggle("active");
+                        elem.classList.toggle("active");
+                    }
+                }
+            );
+        }
+    );
+    // endregion
+
+    // region Filled setting
+    // On click event for the star (which is either filled or not)
+    let filled = document.getElementById("fill-toggle");
+    filled.addEventListener(
+        "click",
+        /**
+         * A boolean value for filled is toggled by clicking
+         * the star and the glyph is toggled as well, between
+         * a filled star and a hollow one.
+         *
+         * @param evt The event that triggered this callback.
+         */
+        function (evt) {
+            filled.firstElementChild.classList.toggle("far");
+            filled.firstElementChild.classList.toggle("fas");
+            // filled.classList("active");
+            if (filled.dataset["filled"] === "no") {
+                filled.dataset["filled"] = "yes";
+                drawer.settings.filled = true;
+            } else {
+                filled.dataset["filled"] = "no";
+                drawer.settings.filled = false;
+            }
+        }
+    );
+    // endregion
+
+    // region Color picker
+    // HTML5 color picker, black by default
+    let colorPicker = document.getElementById("color-selector");
+    colorPicker.value = "#000000";
+    colorPicker.addEventListener(
+        "change",
+        /**
+         * Set the color settings to the chosen color.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            drawer.settings.color = colorPicker.value;
+        }
+    );
+    // endregion
+
+    // region Size settings
+    // region Line width
+    // The DOM elements within the modal belonging to line width
+    let widthSetting = document.getElementById("width-row");
+    let widthDecrease = widthSetting.querySelectorAll("td > a.decrease")[0];
+    let widthIncrease = widthSetting.querySelectorAll("td > a.increase")[0];
+    let widthValue = widthSetting.querySelectorAll("td.value-data")[0];
+    widthDecrease.addEventListener(
+        "click",
+        /**
+         * Decrease the value of the text node down to a minimum of 1.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            widthValue.innerHTML = Math.max(1, parseInt(widthValue.innerHTML) - 4);
+        }
+    );
+    widthIncrease.addEventListener(
+        "click",
+        /**
+         * Increase the value of the text node up to a maximum of 50.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            widthValue.innerHTML = Math.min(70, parseInt(widthValue.innerHTML) + 4);
+        }
+    );
+    // endregion
+
+    // region Font size
+    // The DOM elements within the modal belonging to font size
+    let fontSetting = document.getElementById("font-row");
+    let fontDecrease = fontSetting.querySelectorAll("td > a.decrease")[0];
+    let fontIncrease = fontSetting.querySelectorAll("td > a.increase")[0];
+    let fontValue = fontSetting.querySelectorAll("td.value-data")[0];
+    fontDecrease.addEventListener(
+        "click",
+        /**
+         * Decrease the value of the text node down to a minimum of 6.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            fontValue.innerHTML = ((s) =>
+                Math.max(6, parseInt(s.slice(0, s.length - 2)) - 4) + "pt")(
+                    fontValue.innerHTML
+                );
+        }
+    );
+    fontIncrease.addEventListener(
+        "click",
+        /**
+         * Increase the value of the text node up to a maximum of 42.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            fontValue.innerHTML = ((s) =>
+                Math.min(70, parseInt(s.slice(0, s.length - 2)) + 4) + "pt")(
+                    fontValue.innerHTML
+                );
+        }
+    );
+    // endregion
+
+    // region Modal
+    let sizeModal = document.getElementById("size-modal");
+    // DOM elements that will cancel the changes made to line width and font size
+    let sizeAbort = sizeModal.querySelectorAll("button.abort");
+    for (let i = 0; i < sizeAbort.length; i++) {
+        sizeAbort[i].addEventListener(
+            "click",
+            /**
+             * Change the text nodes back to the value they had
+             * when the modal was opened (the actual value is
+             * stored in a data set within the node).
+             *
+             * @param evt The event that triggered this callback
+             */
+            function (evt) {
+                widthValue.innerHTML = widthSetting.dataset["value"];
+                fontValue.innerHTML = fontSetting.dataset["value"];
+            }
+        );
+    }
+    // The DOM element that will confirm the changes made to line width and font size
+    sizeModal.querySelectorAll("button.confirm")[0].addEventListener(
+        "click",
+        /**
+         * Update both the data set containing the actual value
+         * and the settings object in our drawer.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            widthSetting.dataset["value"] = widthValue.innerHTML;
+            drawer.settings.width = parseInt(widthValue.innerHTML);
+            fontSetting.dataset["value"] = fontValue.innerHTML;
+            drawer.settings.font =
+                fontValue.innerHTML + " " + drawer.settings.font.split(" ")[1];
+        }
+    );
+    // endregion
+    // endregion
+
+    // region FILE IO
+    // region Save
+    /**
+     * Creates a json object and from it a file blob. The json object
+     * additionally adds types of the shapes it holds since json does
+     * not store functions.
+     *
+     * @returns {Blob} A file blob with all the shapes in a json format.
+     */
+    function createJsonBlob() {
+        let lst = [];
+        for (let i = 0; i < drawer.shapes.length; i++) {
+            let tmp = JSON.parse(JSON.stringify(drawer.shapes[i]));
+            tmp["type"] = drawer.shapes[i].__proto__.constructor.name;
+            lst.push(tmp);
+        }
+        return new Blob([JSON.stringify(lst)], { type: "application/json" });
+    }
+
+    /**
+     * Create a temporary anchor to download a blob, click it
+     * and then remove it.
+     */
+    function saveAsJsonFile() {
+        let tmp = window.document.createElement("a");
+        tmp.href = window.URL.createObjectURL(createJsonBlob());
+        tmp.download = "image.json";
+        document.body.appendChild(tmp);
+        tmp.click();
+        document.body.removeChild(tmp);
+    }
+
+    // Add download event for anchor in navigation bar.
+    document.getElementById("img-save").addEventListener("click", saveAsJsonFile);
+    // endregion
+
+    // region Load
+    /**
+     * Convert a json object to its corresponding shape
+     * and add it to the list of shapes to draw.
+     *
+     * @param jsonShape Json equivalent of a shape
+     */
+    function createShapeFromJson(jsonShape) {
+        switch (jsonShape.type) {
+            case "Rectangle":
+                drawer.shapes.push(
+                    new Rectangle(
+                        jsonShape.position,
+                        jsonShape.settings,
+                        jsonShape.width,
+                        jsonShape.height
+                    )
+                );
+                break;
+            case "Oval":
+                drawer.shapes.push(
+                    new Oval(
+                        jsonShape.position,
+                        jsonShape.settings,
+                        jsonShape.xRadius,
+                        jsonShape.yRadius
+                    )
+                );
+                break;
+            case "Circle":
+                drawer.shapes.push(
+                    new Circle(jsonShape.position, jsonShape.settings, jsonShape.xRadius)
+                );
+                break;
+            case "Line":
+                drawer.shapes.push(
+                    new Line(
+                        jsonShape.position,
+                        jsonShape.settings,
+                        jsonShape.endPosition
+                    )
+                );
+                break;
+            case "LineList":
+                let ll = new LineList(jsonShape.position, jsonShape.settings);
+                for (let j = 0; j < jsonShape.xList.length; j++) {
+                    ll.resize(jsonShape.xList[j], jsonShape.yList[j]);
+                }
+                drawer.shapes.push(ll);
+                break;
+            case "EraseList":
+                let eli = new EraseList(jsonShape.position, jsonShape.settings);
+                for (let j = 0; j < jsonShape.xList.length; j++) {
+                    eli.resize(jsonShape.xList[j], jsonShape.yList[j]);
+                }
+                drawer.shapes.push(eli);
+                break;
+            case "DrawnText":
+                let dt = new DrawnText(jsonShape.position, jsonShape.settings);
+                for (let j = 0; j < jsonShape.chars.length; j++) {
+                    dt.resize(jsonShape.chars[j]);
+                }
+                drawer.shapes.push(dt);
+                break;
+        }
+    }
+
+    /**
+     * Parses the json object, which should be an
+     * array of shape objects. Also restarts the
+     * canvas and redraws it.
+     *
+     * @param e On file loaded event
+     */
+    function constructShapesFromFile(e) {
+        let contents = e.target.result;
+        let tmpList = JSON.parse(contents);
+        drawer.selectedElement = null;
+        drawer.shapes.splice(0, drawer.shapes.length);
+        drawer.undoneShapes.splice(0, drawer.undoneShapes.length);
+        for (let i = 0; i < tmpList.length; i++) {
+            createShapeFromJson(tmpList[i]);
+        }
+        drawer.redraw();
+    }
+
+    /**
+     * Uses the first file (if multiples), reads
+     * it and adds a callback for the event of
+     * being done reading it.
+     *
+     * @param evt The event of uploading a file.
+     */
+    function uploadFile(evt) {
+        let file = evt.target.files[0];
+        if (!file) {
+            return;
+        }
+        let reader = new FileReader();
+        reader.addEventListener("load", constructShapesFromFile);
+        reader.readAsText(file);
+    }
+
+    /**
+     * Create temporary file input node, click it
+     * and handle the event for uploading one.
+     * Then it will be removed.
+     */
+    function createTemporaryFileLoader() {
+        let inp = window.document.createElement("input");
+        inp.type = "file";
+        document.body.appendChild(inp);
+        inp.style.visibility = "hidden";
+        inp.addEventListener("change", uploadFile, false);
+        inp.click();
+        document.body.removeChild(inp);
+    }
+
+    // Add upload event for anchor in navigation bar.
+    document
+        .getElementById("img-load")
+        .addEventListener("click", createTemporaryFileLoader);
+    // endregion
+
+    // region New image
+    document.getElementById("img-clear").addEventListener(
+        "click",
+        /**
+         * Restart the drawing.
+         *
+         * @param evt The event that triggered this callback
+         */
+        function (evt) {
+            drawer.selectedElement = null;
+            drawer.shapes.splice(0, drawer.shapes.length);
+            drawer.undoneShapes.splice(0, drawer.undoneShapes.length);
+            drawer.redraw();
+        }
+    );
+    // endregion
+    // endregion
+    // endregion
+})();
